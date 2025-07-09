@@ -40,10 +40,11 @@ namespace SourceQueueServerSink
 
         private void ProduceProduct()
         {
+            SubModel subModel = SubModel.GetSubModel();
+
             if (Target.GetComponent<RelationComponent>().Value.ChildCount() < Target.GetComponent<Resource>().Value.Capacity)
             {
                 // Create new product
-                SubModel subModel = SubModel.GetSubModel();
                 Entity entity = subModel.CreateEntity($"Product{Produced + 1}");
                 entity.AddComponent<Product>();
                 Logger.Debug($"Source created product: {entity.GetName()}");
@@ -53,8 +54,7 @@ namespace SourceQueueServerSink
                 Produced++;
             }
 
-            ulong delay = GenerationTime;
-            SubModel.ApplyModelPrecision(ref delay);
+            ulong delay = GenerationTime * subModel.ModelPrecision;
             EventScheduler.ScheduleLocalEvent(0, delay, ProduceProduct);
         }
     }
