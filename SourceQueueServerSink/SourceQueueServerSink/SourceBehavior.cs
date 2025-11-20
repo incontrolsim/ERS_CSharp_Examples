@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Numerics;
 using Ers;
 
@@ -7,14 +6,9 @@ namespace SourceQueueServerSink
 {
     public class SourceBehavior : ScriptBehaviorComponent
     {
-        [Category("Source")]
-        public Entity Target { get; set; }
-
-        [Category("Source"), Description("The time (in seconds) it takes to generate a product.")]
-        public ulong GenerationTime { get; set; } = 5;
-
-        [Category("Source")]
-        public ulong Produced { get; set; }
+        public Entity Target;
+        public ulong GenerationTime = 5;
+        public ulong Produced = 0;
 
         /// <summary>
         /// Helper function to easily create a source entity.
@@ -27,8 +21,8 @@ namespace SourceQueueServerSink
             SubModel subModel = SubModel.GetSubModel();
             Entity entity = subModel.CreateEntity(name);
             var transform = entity.AddComponent<TransformComponent>();
-            transform.Value.SetPosition(pos);
-            transform.Value.SetScale(4, 2, 1);
+            transform.Value.Position = pos;
+            transform.Value.Scale = new Vector3(4, 2, 1);
             SourceBehavior source = entity.AddComponent<SourceBehavior>();
             return source;
         }
@@ -54,7 +48,7 @@ namespace SourceQueueServerSink
             }
 
             ulong delay = GenerationTime;
-            SubModel.ApplyModelPrecision(ref delay);
+            delay = SubModel.GetSubModel().ApplyModelPrecision(delay);
             EventScheduler.ScheduleLocalEvent(0, delay, ProduceProduct);
         }
     }

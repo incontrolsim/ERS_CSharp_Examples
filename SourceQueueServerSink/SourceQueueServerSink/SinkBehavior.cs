@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Numerics;
 using Ers;
 
@@ -7,8 +6,7 @@ namespace SourceQueueServerSink
 {
     public class SinkBehavior : ScriptBehaviorComponent
     {
-        [Category("Sink")]
-        public ulong Received { get; set; } = 0;
+        public ulong Received = 0;
 
         /// <summary>
         /// Helper function to easily create a sink entity.
@@ -21,8 +19,8 @@ namespace SourceQueueServerSink
             SubModel subModel = SubModel.GetSubModel();
             Entity entity = subModel.CreateEntity(name);
             var transform = entity.AddComponent<TransformComponent>();
-            transform.Value.SetPosition(pos);
-            transform.Value.SetScale(4, 2, 1);
+            transform.Value.Position = pos;
+            transform.Value.Scale = new Vector3(4, 2, 1);
             SinkBehavior sink = entity.AddComponent<SinkBehavior>();
             return sink;
         }

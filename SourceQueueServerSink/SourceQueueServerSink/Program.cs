@@ -1,6 +1,4 @@
 ﻿using Ers;
-using Ers.Model;
-using Ers.Platform;
 using System.Numerics;
 
 namespace SourceQueueServerSink
@@ -20,7 +18,9 @@ namespace SourceQueueServerSink
         {
             ModelContainer modelContainer = ModelContainer.CreateModelContainer();
             Simulator simulator = modelContainer.AddSimulator("Sim1", SimulatorType.DiscreteEvent);
-            EditingSubModel subModel = simulator.GetSubModel();
+            simulator.EnterSubModel();
+
+            SubModel subModel = SubModel.GetSubModel();
 
             // Add component types
             subModel.AddComponentType<SourceBehavior>();
@@ -29,8 +29,6 @@ namespace SourceQueueServerSink
             subModel.AddComponentType<SinkBehavior>();
             subModel.AddComponentType<Product>();
             subModel.AddComponentType<Resource>();
-
-            subModel.EnterSubModel();
 
             SourceBehavior source1 = SourceBehavior.Create("Source1", new Vector3(0, 0, 0));
             QueueBehavior queue1 = QueueBehavior.Create("Queue1", new Vector3(5, 0, 0), 5);
@@ -41,7 +39,7 @@ namespace SourceQueueServerSink
             queue1.Target = server1.ConnectedEntity;
             server1.Target = sink1.ConnectedEntity;
 
-            subModel.ExitSubModel();
+            simulator.ExitSubModel();
             return modelContainer;
         }
     }
@@ -62,7 +60,7 @@ namespace SourceQueueServerSink
                 // Run 1 second on each update step
                 model.Update(1 * model.GetPrecision());
             }
-            ERS.UnInitialize();
+            ERS.Uninitialize();
         }
     }
 }

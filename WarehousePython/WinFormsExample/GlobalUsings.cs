@@ -1,1 +1,0 @@
-﻿global using Entity = System.UInt64;

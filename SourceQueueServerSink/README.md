@@ -9,4 +9,4 @@ Finally, the products leave the simulation through the sink, which keeps a count
 
 The solution consists of two projects:
 - `SourceQueueServerSink`: The simulation components and model.
-- `GUI`: A graphical user interface built with ErsWinForms. It depends on the SourceQueueServerSink project to run the same model.
+- `GUI`: A visualization of the model using the ERS Debugger. It depends on the SourceQueueServerSink project to run the same model.

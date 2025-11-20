@@ -1,2 +1,3 @@
-# ERS_CSharp_Examples
-Examples in C# 
+# ERS C# examples
+
+This repository contains example ERS models made in C#.

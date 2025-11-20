@@ -5,10 +5,7 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceQueueServerSink", "SourceQueueServerSink\SourceQueueServerSink.csproj", "{1BCF5C07-9BDF-45D9-8B3E-4E6B726C85DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{642622F3-415D-409D-B5FD-790EEEC3A01F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1BCF5C07-9BDF-45D9-8B3E-4E6B726C85DC} = {1BCF5C07-9BDF-45D9-8B3E-4E6B726C85DC}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{FB5E291F-8824-497B-BA90-8A82F9B1CC96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,10 +17,10 @@ Global
 		{1BCF5C07-9BDF-45D9-8B3E-4E6B726C85DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BCF5C07-9BDF-45D9-8B3E-4E6B726C85DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BCF5C07-9BDF-45D9-8B3E-4E6B726C85DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{642622F3-415D-409D-B5FD-790EEEC3A01F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{642622F3-415D-409D-B5FD-790EEEC3A01F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{642622F3-415D-409D-B5FD-790EEEC3A01F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{642622F3-415D-409D-B5FD-790EEEC3A01F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB5E291F-8824-497B-BA90-8A82F9B1CC96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB5E291F-8824-497B-BA90-8A82F9B1CC96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB5E291F-8824-497B-BA90-8A82F9B1CC96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB5E291F-8824-497B-BA90-8A82F9B1CC96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
