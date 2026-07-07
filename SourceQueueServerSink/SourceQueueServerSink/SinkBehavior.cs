@@ -16,7 +16,7 @@ namespace SourceQueueServerSink
         /// <returns></returns>
         public static SinkBehavior Create(string name, Vector3 pos)
         {
-            SubModel subModel = SubModel.GetSubModel();
+            SubModel subModel = SubModel.Get();
             Entity entity = subModel.CreateEntity(name);
             var transform = entity.AddComponent<TransformComponent>();
             transform.Value.Position = pos;
@@ -29,7 +29,7 @@ namespace SourceQueueServerSink
         {
             Received++;
             Logger.Debug($"Sink received {newChild.GetName()}");
-            SubModel.GetSubModel().DestroyEntity(newChild);
+            SubModel.Get().DestroyEntity(newChild);
         }
     }
 }

@@ -4,6 +4,33 @@ using Ers;
 
 namespace SourceQueueServerSink
 {
+    struct SourceProduceProductEvent : ILocalEvent<SourceProduceProductEvent>
+    {
+        public Entity SourceEntity;
+
+        public void OnEvent()
+        {
+            SubModel subModel = SubModel.Get();
+            SourceBehavior source = SourceEntity.GetComponent<SourceBehavior>();
+
+            if (source.Target.GetComponent<RelationComponent>().Value.ChildCount < source.Target.GetComponent<Resource>().Value.Capacity)
+            {
+                // Create new product
+                Entity entity = subModel.CreateEntity($"Product{source.Produced + 1}");
+                entity.AddComponent<Product>();
+                Logger.Debug($"Source created product: {entity.GetName()}");
+
+                // Move product
+                subModel.UpdateParentOnEntity(entity, source.Target);
+                source.Produced++;
+            }
+
+            ulong delay = source.GenerationTime;
+            delay = SubModel.Get().ApplyModelPrecision(delay);
+            EventScheduler.ScheduleLocalEvent(0, delay, new SourceProduceProductEvent() { SourceEntity = SourceEntity });
+        }
+    }
+
     public class SourceBehavior : ScriptBehaviorComponent
     {
         public Entity Target;
@@ -18,7 +45,7 @@ namespace SourceQueueServerSink
         /// <returns></returns>
         public static SourceBehavior Create(string name, Vector3 pos)
         {
-            SubModel subModel = SubModel.GetSubModel();
+            SubModel subModel = SubModel.Get();
             Entity entity = subModel.CreateEntity(name);
             var transform = entity.AddComponent<TransformComponent>();
             transform.Value.Position = pos;
@@ -29,27 +56,7 @@ namespace SourceQueueServerSink
 
         public override void OnStart()
         {
-            EventScheduler.ScheduleLocalEvent(0, GenerationTime, ProduceProduct);
-        }
-
-        private void ProduceProduct()
-        {
-            if (Target.GetComponent<RelationComponent>().Value.ChildCount() < Target.GetComponent<Resource>().Value.Capacity)
-            {
-                // Create new product
-                SubModel subModel = SubModel.GetSubModel();
-                Entity entity = subModel.CreateEntity($"Product{Produced + 1}");
-                entity.AddComponent<Product>();
-                Logger.Debug($"Source created product: {entity.GetName()}");
-
-                // Move product
-                subModel.UpdateParentOnEntity(entity, Target);
-                Produced++;
-            }
-
-            ulong delay = GenerationTime;
-            delay = SubModel.GetSubModel().ApplyModelPrecision(delay);
-            EventScheduler.ScheduleLocalEvent(0, delay, ProduceProduct);
+            EventScheduler.ScheduleLocalEvent(0, GenerationTime, new SourceProduceProductEvent() { SourceEntity = ConnectedEntity });
         }
     }
 }

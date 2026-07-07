@@ -4,6 +4,34 @@ using Ers;
 
 namespace SourceQueueServerSink
 {
+    struct ServerProcessEvent : ILocalEvent<ServerProcessEvent>
+    {
+        public Entity ServerEntity;
+
+        public void OnEvent()
+        {
+            ServerBehavior server = ServerEntity.GetComponent<ServerBehavior>();
+
+            Entity child = ServerEntity.GetComponent<RelationComponent>().Value.First;
+            var product = child.GetComponent<Product>();
+            product.Value.Filled = true;
+            Logger.Debug($"Server finished processing {child.GetName()}");
+            server.ScheduleMoveOut();
+        }
+    }
+
+    struct ServerMoveOutEvent : ILocalEvent<ServerMoveOutEvent>
+    {
+        public Entity ServerEntity;
+
+        public void OnEvent()
+        {
+            ServerBehavior server = ServerEntity.GetComponent<ServerBehavior>();
+            Entity child = ServerEntity.GetComponent<RelationComponent>().Value.First;
+            SubModel.Get().UpdateParentOnEntity(child, server.Target);
+        }
+    }
+
     public class ServerBehavior : ScriptBehaviorComponent
     {
         public Entity Target;
@@ -18,7 +46,7 @@ namespace SourceQueueServerSink
         /// <returns></returns>
         public static ServerBehavior Create(string name, Vector3 pos)
         {
-            SubModel subModel = SubModel.GetSubModel();
+            SubModel subModel = SubModel.Get();
             Entity entity = subModel.CreateEntity(name);
             var transform = entity.AddComponent<TransformComponent>();
             transform.Value.Position = pos;
@@ -31,29 +59,16 @@ namespace SourceQueueServerSink
         public override void OnEntered(Entity newChild)
         {
             ulong delay = ProcessTime;
-            delay = SubModel.GetSubModel().ApplyModelPrecision(delay);
-            EventScheduler.ScheduleLocalEvent(0, delay, ProcessProduct);
+            delay = SubModel.Get().ApplyModelPrecision(delay);
+            EventScheduler.ScheduleLocalEvent(0, delay, new ServerProcessEvent() { ServerEntity = ConnectedEntity });
             Logger.Debug($"Server started processing {newChild.GetName()}");
         }
 
-        private void ProcessProduct()
-        {
-            Entity child = ConnectedEntity.GetComponent<RelationComponent>().Value.First();
-            var product = child.GetComponent<Product>();
-            product.Value.Filled = true;
-            Logger.Debug($"Server finished processing {child.GetName()}");
-            ScheduleMoveOut();
-        }
-
-        private void ScheduleMoveOut()
+        public void ScheduleMoveOut()
         {
             ulong delay = MoveOutTime;
-            delay = SubModel.GetSubModel().ApplyModelPrecision(delay);
-            EventScheduler.ScheduleLocalEvent(0, delay, () =>
-            {
-                Entity child = ConnectedEntity.GetComponent<RelationComponent>().Value.First();
-                SubModel.GetSubModel().UpdateParentOnEntity(child, Target);
-            });
+            delay = SubModel.Get().ApplyModelPrecision(delay);
+            EventScheduler.ScheduleLocalEvent(0, delay, new ServerMoveOutEvent() { ServerEntity = ConnectedEntity });
         }
     }
 }

@@ -16,19 +16,24 @@ namespace SourceQueueServerSink
     {
         public static ModelContainer Create()
         {
-            ModelContainer modelContainer = ModelContainer.CreateModelContainer();
+            // Add component types
+            ComponentRegistry<SourceBehavior>.Register();
+            ComponentRegistry<QueueBehavior>.Register();
+            ComponentRegistry<ServerBehavior>.Register();
+            ComponentRegistry<SinkBehavior>.Register();
+            ComponentRegistry<Product>.Register();
+            ComponentRegistry<Resource>.Register();
+
+            // Add event types
+            LocalEventRegistry<SourceProduceProductEvent>.Register();
+            LocalEventRegistry<QueueScheduleMoveOutEvent>.Register();
+            LocalEventRegistry<QueueMoveOutEvent>.Register();
+            LocalEventRegistry<ServerProcessEvent>.Register();
+            LocalEventRegistry<ServerMoveOutEvent>.Register();
+
+            ModelContainer modelContainer = ModelContainer.Create();
             Simulator simulator = modelContainer.AddSimulator("Sim1", SimulatorType.DiscreteEvent);
             simulator.EnterSubModel();
-
-            SubModel subModel = SubModel.GetSubModel();
-
-            // Add component types
-            subModel.AddComponentType<SourceBehavior>();
-            subModel.AddComponentType<QueueBehavior>();
-            subModel.AddComponentType<ServerBehavior>();
-            subModel.AddComponentType<SinkBehavior>();
-            subModel.AddComponentType<Product>();
-            subModel.AddComponentType<Resource>();
 
             SourceBehavior source1 = SourceBehavior.Create("Source1", new Vector3(0, 0, 0));
             QueueBehavior queue1 = QueueBehavior.Create("Queue1", new Vector3(5, 0, 0), 5);
@@ -54,11 +59,11 @@ namespace SourceQueueServerSink
             ModelContainer model = Model.Create();
 
             // Run for a total of 86400 seconds (1 day)
-            ulong endTime = 86400 * model.GetPrecision();
+            ulong endTime = 86400 * model.Precision;
             while (model.CurrentTime < endTime)
             {
                 // Run 1 second on each update step
-                model.Update(1 * model.GetPrecision());
+                model.Update(1 * model.Precision);
             }
             ERS.Uninitialize();
         }
